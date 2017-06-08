@@ -30,14 +30,14 @@ so = 0.0*np.arange(nplayers)
 sopp = 0.0*np.arange(nplayers)
 
 for n,p in player_stats.iterrows():
-  print n,p.PLAYER_NAME
+  print(n,p.PLAYER_NAME)
   # Get player totals.
   # If player hasn't played (empty gamelog)
   # then skip.
   try:
     l = bb.get_player_gamelog(p.PLAYER_ID)
   except ValueError:
-    print 'Error : ' + p.PLAYER_NAME + ' not found in Game logs!'    
+    print('Error : ' + p.PLAYER_NAME + ' not found in Game logs!')    
     continue
   #gp = len(l)
   fga=np.sum(l.FGA)  
@@ -56,7 +56,7 @@ for n,p in player_stats.iterrows():
       temp = np.where(pass_stats.PLAYER==p.PLAYER_NAME)[0]
     idx = temp[0]
   except IndexError:
-    print 'Error : ' + p.PLAYER_NAME + ' not found in SportVu Passing!'    
+    print('Error : ' + p.PLAYER_NAME + ' not found in SportVu Passing!')    
     continue
   ast_pot=pass_stats.AST_POT[idx]*pass_stats.GP[idx]
   ast_ft=pass_stats.AST_FT[idx]*pass_stats.GP[idx]
@@ -84,7 +84,7 @@ for n,p in player_stats.iterrows():
     else: # uh-oh...
       # If we get here, then player has been traded!
       # need to fill this in
-      print g,p.PLAYER_NAME
+      print(g,p.PLAYER_NAME)
       homeaway=0
     # Add team totals for this game.
     team_box = bb.get_boxscore(g)[5].iloc[homeaway]

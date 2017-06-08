@@ -13,11 +13,11 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
-
+import os
 # PATHS : Change these for your system
-DATAHOME = '/media/gmf/GMF/unsynced/nba/data' # where to save data
+DATAHOME = os.getcwd() + '/data' # where to save data
 #DATAHOME = '/media/ext/GMF/Data/nba' # where to save data
-REPOHOME = '/home/gmf/Code/git/nba' # where are scripts
+REPOHOME = 'os.getcwd() # where are scripts
         
 current_year = '2016' # 2016-17 season
 default_season = current_year + '-10'
@@ -134,7 +134,7 @@ def dateify(date_str, delim='-'):
   return datetime.date(int(y),int(m),int(d))
 
 def dict_inv(d):
-  return zip2(d.values(), d.keys())
+  return zip2(list(d.values()), list(d.keys()))
 
 def getclosest(i, N):
   N = np.array(N)
@@ -156,7 +156,7 @@ def nsec_elapsed(period, pctime_str):
 
 def nsec_total(Nperiods):
   if Nperiods<4:
-    print 'WARNING: Less than four periods found...'
+    print('WARNING: Less than four periods found...')
     return np.nan
   elif Nperiods==4:
     return 2880
@@ -395,7 +395,7 @@ def get_si_pbp(gameid):
 
 def write_si_pbp(gameid):
   # convert gameid to SI id
-  print 'Game %s, Sports Illustrated' % gameid
+  print('Game %s, Sports Illustrated' % gameid)
   p = si_params.copy()
   p['id'] = gameid
   j = requests.get('http://www.si.com/pbp/liveupdate', params=p, headers=user_agent).json()
@@ -431,9 +431,9 @@ def get_sportvu_locations(gameid, eventnum):
   away_players['teamid'] = J['visitor']['teamid']
   players = pd.merge(home_players, away_players, how='outer')
   players['playername'] = [pl.firstname + ' ' + pl.lastname for n,pl in players.iterrows()]
-  namedict = dict(zip(players.playerid.values, players.playername.values))  
-  numberdict = dict(zip(players.playerid.values, players.jersey.values))
-  positiondict = dict(zip(players.playerid.values, players.position.values))
+  namedict = dict(list(zip(players.playerid.values, players.playername.values)))  
+  numberdict = dict(list(zip(players.playerid.values, players.jersey.values)))
+  positiondict = dict(list(zip(players.playerid.values, players.position.values)))
 
   # SHOULD WE DOWNSAMPLE THE NUMBER OF MOMENTS CHOSEN????
   moments = J['moments']
@@ -450,13 +450,13 @@ def get_sportvu_locations(gameid, eventnum):
   ballz = [m[5][0][4] for m in moments]
   
   # Save larger (10-d) data for each player
-  teamid = np.array(range(nmoments), dtype=object)
-  playerid = np.array(range(nmoments), dtype=object)
-  playername = np.array(range(nmoments), dtype=object)
-  playernumber = np.array(range(nmoments), dtype=object)
-  position = np.array(range(nmoments), dtype=object)
-  playerx = np.array(range(nmoments), dtype=object)
-  playery = np.array(range(nmoments), dtype=object)
+  teamid = np.array(list(range(nmoments)), dtype=object)
+  playerid = np.array(list(range(nmoments)), dtype=object)
+  playername = np.array(list(range(nmoments)), dtype=object)
+  playernumber = np.array(list(range(nmoments)), dtype=object)
+  position = np.array(list(range(nmoments)), dtype=object)
+  playerx = np.array(list(range(nmoments)), dtype=object)
+  playery = np.array(list(range(nmoments)), dtype=object)
 
   for m in range(nmoments):
     teamid[m] = [moments[m][5][n+1][0] for n in range(nplayers)]
@@ -487,7 +487,7 @@ def get_sportvu_locations(gameid, eventnum):
 def get_players_event(gameid, eventnum):
   # Important to remember: Event number indexing in play-by-play begins at 1!
   if eventnum==0:
-    print 'Warning: Event Num = 0 passed. Switching to event number 1.'
+    print('Warning: Event Num = 0 passed. Switching to event number 1.')
     eventnum+=1
   # 
   try:
@@ -505,9 +505,9 @@ def get_players_event(gameid, eventnum):
   away_players['teamid'] = J['visitor']['teamid']
   players = pd.merge(home_players, away_players, how='outer')
   players['playername'] = [pl.firstname + ' ' + pl.lastname for n,pl in players.iterrows()]  
-  namedict = dict(zip(players.playerid.values, players.playername.values))
-  numberdict = dict(zip(players.playerid.values, players.jersey.values))
-  positiondict = dict(zip(players.playerid.values, players.position.values))
+  namedict = dict(list(zip(players.playerid.values, players.playername.values)))
+  numberdict = dict(list(zip(players.playerid.values, players.jersey.values)))
+  positiondict = dict(list(zip(players.playerid.values, players.position.values)))
   
   moments = [J['moments'][0], J['moments'][-1]]
   nmoments = len(moments)
@@ -515,13 +515,13 @@ def get_players_event(gameid, eventnum):
   # Initialize arrays
   nplayers = 10  
   momentid = [m[1] for m in moments]
-  teamid = np.array(range(nmoments), dtype=object)
-  playerid = np.array(range(nmoments), dtype=object)
-  playername = np.array(range(nmoments), dtype=object)
-  playernumber = np.array(range(nmoments), dtype=object)
-  position = np.array(range(nmoments), dtype=object)
-  playerx = np.array(range(nmoments), dtype=object)
-  playery = np.array(range(nmoments), dtype=object)
+  teamid = np.array(list(range(nmoments)), dtype=object)
+  playerid = np.array(list(range(nmoments)), dtype=object)
+  playername = np.array(list(range(nmoments)), dtype=object)
+  playernumber = np.array(list(range(nmoments)), dtype=object)
+  position = np.array(list(range(nmoments)), dtype=object)
+  playerx = np.array(list(range(nmoments)), dtype=object)
+  playery = np.array(list(range(nmoments)), dtype=object)
 
   for m in range(nmoments):
     teamid[m] = [moments[m][5][n+1][0] for n in range(nplayers)]
@@ -596,8 +596,8 @@ def get_play_team(p):
     #  if re.search('Turnover',h): return 0
     #  elif re.search('Turnover',v): return 1
     else:
-      print 'PROBLEM!'
-      print h + '\t' + v
+      print('PROBLEM!')
+      print(h + '\t' + v)
 
 def get_play_desc(p):
   if p.HOMEDESCRIPTION is not None and p.VISITORDESCRIPTION is None:
@@ -629,8 +629,8 @@ def get_play_desc(p):
     #  if re.search('Turnover',h): return 0
     #  elif re.search('Turnover',v): return 1
     else:
-      print 'PROBLEM!'
-      print h + '\t' + v
+      print('PROBLEM!')
+      print(h + '\t' + v)
       #oiuj
 #### END OLD ^^^ END OLD ^^^ END OLD ^^^ #######  
 
@@ -649,7 +649,7 @@ def write_game_json(gameid, do_sportvu=False):
   
   #for box_type in box_types:
   box_type = 'summary'
-  print 'Game %s, box score (%s)' % (gameid, box_type)
+  print('Game %s, box score (%s)' % (gameid, box_type))
   with open('%s/json/boxv2_%s_%s.json' % (DATAHOME, box_type, gameid), 'w') as f:
     box = requests.get('http://stats.nba.com/stats/boxscore%sv2' % box_type, params=p, headers=user_agent).json()['resultSets'][0]
     json.dump( box, f)
@@ -657,23 +657,23 @@ def write_game_json(gameid, do_sportvu=False):
   box_type = 'traditional'
   #box_type = 'advanced'
   #box_type = 'playertrack'
-  print 'Game %s, box score (%s)' % (gameid, box_type)
+  print('Game %s, box score (%s)' % (gameid, box_type))
   with open('%s/json/boxv2_%s_%s.json' % (DATAHOME, box_type, gameid), 'w') as f:
     box = requests.get('http://stats.nba.com/stats/boxscore%sv2' % box_type, params=p, headers=user_agent).json()['resultSets'][0]
     json.dump( box, f)
     
   box_type = 'playertrack'
-  print 'Game %s, box score (%s)' % (gameid, box_type)
+  print('Game %s, box score (%s)' % (gameid, box_type))
   with open('%s/json/boxv2_%s_%s.json' % (DATAHOME, box_type, gameid), 'w') as f:
     box = requests.get('http://stats.nba.com/stats/boxscore%sv2' % box_type, params=p, headers=user_agent).json()['resultSets'][0]
     json.dump( box, f)
       
-  print 'Game %s, play by play' % gameid
+  print('Game %s, play by play' % gameid)
   pbp = requests.get('http://stats.nba.com/stats/playbyplayv2', params=p, headers=user_agent).json()['resultSets'][0]
   with open('%s/json/pbp_%s.json' % (DATAHOME, gameid), 'w') as f:
     json.dump( pbp, f)
     
-  print 'Game %s, shot chart' % gameid
+  print('Game %s, shot chart' % gameid)
   shots = requests.get('http://stats.nba.com/stats/shotchartdetail', params=p, headers=user_agent).json()['resultSets'][0]
   with open('%s/json/shots_%s.json' % (DATAHOME, gameid), 'w') as f:
     json.dump( shots, f)
@@ -698,7 +698,7 @@ def write_gamelist_by_date(filename,seasonid,startday,stopday):
       home = g['home']['team_key']
       away = g['visitor']['team_key']
       gamecode = diso + away + home
-      print d,g['id'],away,home
+      print(d,g['id'],away,home)
       #
       # VV NEED TO FIX: STILL INCLUDES ALL STAR GAME
       #
